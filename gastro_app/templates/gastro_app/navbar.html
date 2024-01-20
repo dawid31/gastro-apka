@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static '/css/styles.css' %}" type="text/css">
+</head>
+<body>
+
+<nav>
+  <a href="#">Gastro-apka</a>
+  <a href="{% url 'index' %}">Strona główna</a>
+  <a href="{% url 'menu' %}">Menu</a>
+  {% if user.is_authenticated %}
+  <a href="{% url 'logout' %}">Wyloguj się</a>
+  {% else %}
+  <a href="{% url 'login' %}">Zaloguj się</a>
+  {% endif %}
+  <a href="{% url 'register' %}">Zarejestruj się</a>
+  {% if user.is_authenticated %}
+  <a href="{% url 'cart' request.user.id %}">Go to cart</a>
+  {% else %}
+  <a href="{% url 'login' %}">Go to cart</a>
+  {% endif %}
+
+  Zalogowano jako: {{ request.user.username }}
+
+
+</nav>
+
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>

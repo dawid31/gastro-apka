@@ -1,0 +1,77 @@
+{% extends 'gastro_app/navbar.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .cart-container {
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .cart-item {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .cart-item img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: bold;
+        }
+
+        .cart-item-price {
+            color: #555;
+        }
+
+        .cart-item-remove {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <div class="cart-container">
+        <h1> {{request.user.username}} cart</h1>
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <!-- <img src="product1.jpg" alt="Product 1"> -->
+            <div class="cart-item-details">
+                <div class="cart-item-title"> {{ item.product }}</div>
+                <div class="cart-item-price">{{ item.quantity }}</div>
+                <div class="cart-item-price">{{ item.product.price }}</div>
+            </div>
+            <div class="cart-item-remove">Remove</div>
+        </div>
+        {% endfor %}
+        Sum: {{ total_price }}
+    </div>
+
+</body>
+</html>
+
+{% endblock content %}

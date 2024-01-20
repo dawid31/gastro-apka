@@ -1,0 +1,37 @@
+{% extends 'gastro_app/navbar.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static '/css/styles.css' %}" type="text/css">
+</head>
+<body>
+
+
+<div class="menu-container">
+    <p>Menu</p>
+ <div class="menu-item">
+
+    {% for product in products %}
+    <div class="menu-item">
+        <div class="image-container">
+            <img class="menu-image" src="{% static '/images/big mac.png' %}">
+        </div>
+        <p>{{ product.name }}</p>
+        <p>Description: {{ product.description }}</p>
+        <p>Price: {{ product.price }} PLN</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'add_to_cart' product_id=product.id %}">Add to Cart</a>
+        {% else %}
+            <a href="{% url 'login' %}">Add</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% for item in cart_items %}
+
+    {% endfor %}
+</div>
+</body>
+
+
+{% endblock content %}
