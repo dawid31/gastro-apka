@@ -36,11 +36,18 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class OrderStatus(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='OrderItem')
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_confirmed = models.BooleanField(default=False)
+    status = models.ForeignKey(OrderStatus, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
@@ -52,6 +59,8 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order #{self.order.id}"
+    
+
     
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

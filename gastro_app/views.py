@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, Order, OrderItem, OrderStatus
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -18,7 +18,7 @@ def loginUser(request):
 
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('menu')
     return render(request, 'gastro_app/login.html')
 
 
@@ -44,9 +44,6 @@ def userCart(request, pk):
     context = {'cart_items': cart_items, 'total_price': total_price}
     return render(request, 'gastro_app/cart.html', context)
 
-from django.shortcuts import render, redirect
-from .models import Product, Cart, CartItem
-
 def add_to_cart(request, product_id):
     product = Product.objects.get(pk=product_id)
 
@@ -65,6 +62,55 @@ def add_to_cart(request, product_id):
     cart_item.save()
 
     return redirect('menu')  # Change 'product_list' to the name of your product list view
+
+def remove_from_cart(request, product_id):
+    product = Product.objects.get(pk=product_id)
+
+    # Get the user's cart
+    user_cart = request.user.cart
+
+    # Check if the product is in the cart
+    try:
+        cart_item = CartItem.objects.get(cart=user_cart, product=product)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
+    except CartItem.DoesNotExist:
+        pass  # Product not in the cart, do nothing
+
+    return redirect('cart', pk=request.user.id)
+
+def place_order(request):
+    if request.method == 'POST':
+        # Pobierz produkty z koszyka użytkownika
+        user_cart = request.user.cart
+        cart_items = user_cart.cartitem_set.all()
+
+        # Utwórz nowe zamówienie
+        order = Order.objects.create(user=request.user, total_price=user_cart.calculate_total_price())
+
+        # Dodaj produkty do zamówienia
+        for cart_item in cart_items:
+            OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity)
+
+        # # Ustaw status zamówienia na "Przyjęte"
+        # order_status = OrderStatus.objects.get(name="Przyjęte")
+        # order.status = order_status
+        # order.save()
+
+        # Wyczyść koszyk użytkownika
+        user_cart.cartitem_set.all().delete()
+
+        #messages.success(request, 'Zamówienie zostało złożone pomyślnie!')
+        return redirect('order_status', order_id=order.id)
+
+    return render(request, 'gastro_app/place_order.html')
+
+def order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'gastro_app/order_status.html', {'order': order})
 
 def register(request):
     if request.method == 'POST':
