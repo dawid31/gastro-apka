@@ -1,0 +1,22 @@
+{% extends 'gastro_app/navbar.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>Restaurant Order List</h2>
+  <ul>
+    {% for order in orders %}
+      <li>
+        Order #{{ order.id }} - {{ order.user.username }} - Status: {{ order.status.name }}
+        <form method="post" action="{% url 'change_order_status' order.id %}">
+          {% csrf_token %}
+          <select name="status_id">
+            {% for status in order_statuses %}
+              <option value="{{ status.id }}">{{ status.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Change Status</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .forms import UserRegistrationForm
-from django.contrib.auth import get_user_model
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -12,15 +11,8 @@ class Client(models.Model):
     def __str__(self):
         return f"Client: {self.user.username} - {self.address}"
 
-User = get_user_model()
 
-@receiver(post_save, sender=User)
-def create_user_client_signal(sender, instance, created, **kwargs):
-    if created and not hasattr(instance, 'client'):
-        # Extract the address from the form data
-        address = instance.userregistrationform.address if hasattr(instance, 'userregistrationform') else None
-        # Create a Client for the user with the provided address
-        Client.objects.create(user=instance, address=address)
+
 
 
 # Add this line to make the Client model compatible with the existing User model
@@ -49,11 +41,19 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class OrderStatus(models.Model):
-    name = models.CharField(max_length=50)
+    STATUS_CHOICES = [
+        ('zaakceptowane', 'Zaakceptowane'),
+        ('odrzucone', 'Odrzucone'),
+        ('w_drodze', 'W drodze'),
+        ('dostarczone', 'Dostarczone'),
+    ]
+
+    name = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

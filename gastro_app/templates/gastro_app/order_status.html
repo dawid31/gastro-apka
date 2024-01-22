@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="menu-container">
-    <p>This is your ({{request.user}}) cart</p>
+    <p>This is your ({{request.user}}) unique order link</p>
     {% if order.status %}
     <p>Order status is {{order.status}}</p>
     {% else %}
     <p>Order status is waiting for confirmation</p>
     {% endif %}
     <p>Total price is {{order.total_price}}</p>
-    <p>address is: {{address}} </p>
+    <p>address is: {{ request.user.client.address }} </p>
     <ul>
         {% for order_item in order.orderitem_set.all %}
         <li>{{ order_item.quantity }} x {{ order_item.product.name }}</li>

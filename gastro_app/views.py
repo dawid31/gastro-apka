@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product, Cart, CartItem, Order, OrderItem, OrderStatus
+from .models import Product, Cart, CartItem, Order, OrderItem, OrderStatus, Client
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm  # Adjust this import based on your project structure
 from django.contrib.auth import login
-from .models import create_user_client_signal
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 def loginUser(request):
     if request.method == 'POST':
@@ -114,9 +114,7 @@ def order_status(request, order_id):
     user_cart = get_object_or_404(Cart, user=request.user)
     cart_items = user_cart.cartitem_set.all()
     total_price = user_cart.calculate_total_price()
-
-    address = request.user.client.address
-    context = {'order': order, 'address': address, 'cart_items': cart_items, 'total_price': total_price}
+    context = {'order': order, 'cart_items': cart_items, 'total_price': total_price}
     return render(request, 'gastro_app/order_status.html', context)
 
 def register(request):
@@ -124,15 +122,36 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # The address will be automatically extracted from the form
-            create_user_client_signal(sender=User, instance=user, created=True)
+            # Create a Client instance and associate it with the user
+            address = form.cleaned_data['address']
+            client = Client.objects.create(user=user, address=address)
             login(request, user)
             return redirect('menu')  # Redirect to your desired page
     else:
         form = UserRegistrationForm()
     context = {'form': form}
     return render(request, 'gastro_app/register.html', context)
+    
 
 def logoutUser(request):
     logout(request)
     return redirect('menu')  # Redirect to your desired page
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def restaurant_order_list(request):
+    orders = Order.objects.all()
+    order_statuses = OrderStatus.objects.all()
+    return render(request, 'gastro_app/orders_list.html', {'orders': orders, 'order_statuses': order_statuses})
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def change_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        status_id = request.POST.get('status_id')
+        if status_id:
+            order.status_id = status_id
+            order.save()
+    return redirect('restaurant_order_list')  # Redirect to the order list page
