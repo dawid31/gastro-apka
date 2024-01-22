@@ -1,2 +1,3 @@
 .env
 gastro_app/migrations/
+gastro_app/__pychache__/

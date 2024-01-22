@@ -32,39 +32,60 @@ body, h1, h2, p, ul, li {
   }
 
   .menu-container {
-    background-color: #333;
-    border: 2px solid #fff;
-    border-radius: 10px;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Optional: Add a subtle box shadow */
-    width: 100%;
+    background-color: #333; /* Dark background color */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Lighter shadow color */
   }
-
-  .menu-container p {
-    color: #fff;
-    text-align: center;
+  
+  /* Dark-themed Menu Item Container */
+  .menu-item {
+    display: flex;
+    flex-direction: column; /* Align items in a column */
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #444; /* Darker background color */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #555; /* Darker border color */
   }
-
-  .menu-item {  
-    background-color: #333;
-    border: 2px solid #fff;
-    border-radius: 10px; /* Adjust the border-radius for individual items */
-    margin-bottom: 10px; /* Adjust the margin between items */
-    padding: 10px;
-    text-align: center;
+  
+  /* Dark-themed Menu Item Image Container */
+  .menu-item .image-container {
+    flex: 0 0 15%; /* 15% of the width */
+    margin-bottom: 15px; /* Adjust spacing between image and content */
   }
-
-  /* Additional styling for text inside the menu items */
-  .menu-item p {
-    color: #fff;
-    margin: 0;
-  }
-
-  .menu-image {
+  
+  /* Dark-themed Menu Item Image */
+  .menu-item img {
     width: 15%;
-    height: auto; /* This maintains the aspect ratio */
-}
-
-  .global {
-    background-color: aqua;
+    border-radius: 6px;
   }
+  
+  /* Dark-themed Menu Item Content */
+  .menu-item .content {
+    flex: 1;
+  }
+  
+  /* Dark-themed Menu Item Title */
+  .menu-item .content h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #fff; /* Light text color */
+  }
+  
+  /* Dark-themed Menu Item Description */
+  .menu-item .content p {
+    margin: 10px 0;
+    color: #bbb; /* Lighter text color */
+  }
+  
+  /* Dark-themed Menu Item Price */
+  .menu-item .content .price {
+    font-weight: bold;
+    color: #e44d26;
+  }
+
+/* Add more styles as needed */

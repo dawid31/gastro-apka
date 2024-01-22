@@ -9,6 +9,7 @@
     <p>Order status is waiting for confirmation</p>
     {% endif %}
     <p>Total price is {{order.total_price}}</p>
+    <p>address is: {{address}} </p>
     <ul>
         {% for order_item in order.orderitem_set.all %}
         <li>{{ order_item.quantity }} x {{ order_item.product.name }}</li>

@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db import transaction
 from django.contrib.auth.forms import UserCreationForm
+from .forms import UserRegistrationForm  # Adjust this import based on your project structure
 from django.contrib.auth import login
+from .models import create_user_client_signal
 
 def loginUser(request):
     if request.method == 'POST':
@@ -110,19 +111,26 @@ def place_order(request):
 
 def order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'gastro_app/order_status.html', {'order': order})
+    user_cart = get_object_or_404(Cart, user=request.user)
+    cart_items = user_cart.cartitem_set.all()
+    total_price = user_cart.calculate_total_price()
+
+    address = request.user.client.address
+    context = {'order': order, 'address': address, 'cart_items': cart_items, 'total_price': total_price}
+    return render(request, 'gastro_app/order_status.html', context)
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # The address will be automatically extracted from the form
+            create_user_client_signal(sender=User, instance=user, created=True)
             login(request, user)
             return redirect('menu')  # Redirect to your desired page
     else:
-        form = UserCreationForm()
+        form = UserRegistrationForm()
     context = {'form': form}
-
     return render(request, 'gastro_app/register.html', context)
 
 def logoutUser(request):

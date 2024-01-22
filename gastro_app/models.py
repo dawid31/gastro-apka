@@ -2,22 +2,35 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from .forms import UserRegistrationForm
+from django.contrib.auth import get_user_model
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    address = models.TextField()
+    address = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Client: {self.user.username} - {self.address}"
 
+User = get_user_model()
+
+@receiver(post_save, sender=User)
+def create_user_client_signal(sender, instance, created, **kwargs):
+    if created and not hasattr(instance, 'client'):
+        # Extract the address from the form data
+        address = instance.userregistrationform.address if hasattr(instance, 'userregistrationform') else None
+        # Create a Client for the user with the provided address
+        Client.objects.create(user=instance, address=address)
+
+
 # Add this line to make the Client model compatible with the existing User model
-User.client = property(lambda u: Client.objects.get_or_create(user=u)[0] if hasattr(u, 'client') else None)
+#User.client = property(lambda u: Client.objects.get_or_create(user=u)[0] if hasattr(u, 'client') else None)
 
 @receiver(post_save, sender=User)
 def create_user_cart(sender, instance, created, **kwargs):
     if created:
         Cart.objects.create(user=instance)
+
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=100)
