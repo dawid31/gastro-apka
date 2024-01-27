@@ -1,22 +1,52 @@
 {% extends 'gastro_app/navbar.html' %}
 {% load static %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
 {% block content %}
-  <h2>Restaurant Order List</h2>
-  <ul>
-    {% for order in orders %}
-      <li>
-        Order #{{ order.id }} - {{ order.user.username }} - Status: {{ order.status.name }}
-        <form method="post" action="{% url 'change_order_status' order.id %}">
-          {% csrf_token %}
-          <select name="status_id">
-            {% for status in order_statuses %}
-              <option value="{{ status.id }}">{{ status.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="submit">Change Status</button>
-        </form>
-      </li>
-    {% endfor %}
-  </ul>
-{% endblock content %}
+  <div class="container mt-5">
+    <div class="container text-center">
+      <h1 class="font-weight-bold"><h2 class="text-white">Restaurant Order List</h2>
+    </div>
+    <div class="menu-container">
+      <ul class="list-group order-list">
+        {% for order in orders %}
+          <li class="list-group-item order-item bg-dark text-white mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="order-info">
+                <span class="font-weight-bold">Order #{{ order.id }} - {{ order.user.username }} - Status: {{ order.status.name }}</span>
+                <p>Placed {{ order.order_date|timesince }} ago</p>
+              </div>
+              <form method="post" action="{% url 'change_order_status' order.id %}" class="status-form">
+                {% csrf_token %}
+                <select name="status_id" class="custom-select status-dropdown bg-dark text-white">
+                  {% for status in order_statuses %}
+                    <option value="{{ status.id }}" {% if status.id == order.status.id %}selected{% endif %}>
+                      {{ status.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-outline-light change-status-btn">Change Status</button>
+              </form>              
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+</body>
+</html>

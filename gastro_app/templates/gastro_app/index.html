@@ -5,26 +5,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Dowozów Gastronomicznych</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+
+    .container {
+      background-color: #333;
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 50px;
+    }
+
+    h1, p {
+      color: #fff;
+    }
+
+    p.text-muted {
+      color: #aaa; /* Adjusted the color to be less muted */
+    }
+
+    .btn-dark {
+      background-color: #555;
+      border-color: #555;
+    }
+
+    .btn-dark:hover {
+      background-color: #777;
+      border-color: #777;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    <h1>System Dowozów Gastronomicznych</h1>
-</header>
+  <div class="container text-center">
+    <h1 class="font-weight-bold">👨‍🍳Witamy w naszej restauracji!👨‍🍳</h1>
+    <p class="text-muted">Odkrywaj i zamawiaj najlepsze jedzenie, smacznego 😋 </p>
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'menu' %}" class="btn btn-dark mr-2">Check Menu</a>
+      <a href="{% url 'login' %}" class="btn btn-dark">Login</a>
+    </div>
+  </div>
 
-Przejdz do sekcji menu, aby przejrzec nasza oferte
-
-<div id="content">
-</div>
-
-<footer>
-    <p>&copy; 2023 System Dowozów Gastronomicznych. Wszelkie prawa zastrzeżone.</p>
-</footer>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
+
+
 
 {% endblock content %}

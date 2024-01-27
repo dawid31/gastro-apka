@@ -155,3 +155,12 @@ def change_order_status(request, order_id):
             order.status_id = status_id
             order.save()
     return redirect('restaurant_order_list')  # Redirect to the order list page
+
+def order_history(request):
+    # Assuming the user is logged in
+    user = request.user
+
+    orders = Order.objects.filter(user=user).order_by('-order_date')
+
+    context = {'orders': orders}
+    return render(request, 'gastro_app/order_history.html', context)

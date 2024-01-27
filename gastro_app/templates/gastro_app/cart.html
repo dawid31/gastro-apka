@@ -7,13 +7,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            background-color: #1e1e1e;
+            color: #fff;
         }
+
+
 
         .cart-container {
             max-width: 600px;
@@ -51,6 +56,11 @@
             color: red;
             cursor: pointer;
         }
+
+        /* Bootstrap Styles */
+        .place-order-btn {
+            margin-top: 10px;
+        }
     </style>
     <title>Shopping Cart</title>
 </head>
@@ -63,12 +73,12 @@
                     {% for item in cart_items %}
                     <div class="cart-item">
                         <div class="cart-item-details">
-                            <div class="cart-item-title">{{ item.product.name }}</div>
+                            <div class="cart-item-title"><h2>{{ item.product.name }}</h2></h2></div>
                             <div class="cart-item-price"><p class="price">Price: ${{ item.product.price }}</p></div>
                             <div class="cart-item-quantity">Quantity: {{ item.quantity }}</div>
                         </div>
                         <div class="cart-item-remove">
-                            <a href="{% url 'remove_from_cart' product_id=item.product.id %}">Remove from Cart</a>
+                            <a href="{% url 'remove_from_cart' product_id=item.product.id %}">✖️</a>
                         </div>
                     </div>
                     {% endfor %}
@@ -76,7 +86,7 @@
                     {% if cart_items %}
                         <form method="post" action="{% url 'place_order' %}">
                             {% csrf_token %}
-                            <button type="submit">Place an order</button>
+                            <button type="submit" class="btn btn-success place-order-btn">Place an order</button>
                         </form>
                     {% else %}
                         <p>Your cart is empty. Add items to your cart <a href="{% url 'menu' %}">here</a> to place an order.</p>
@@ -85,7 +95,11 @@
             </div>
         </div>
     </div>
-   
+
+    <!-- Bootstrap JavaScript (optional, if you need it) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
