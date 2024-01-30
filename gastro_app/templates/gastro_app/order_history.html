@@ -1,60 +1,42 @@
 {% extends 'gastro_app/navbar.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'path/to/client_styles.css' %}">
+</head>
+<body>
 
 {% block content %}
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f8f8f8;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .order-list {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .order-item {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-      margin: 0;
-    }
-
-    .order-item strong {
-      font-size: 18px;
-    }
-
-    .order-item p {
-      margin: 5px 0;
-      color: #555;
-    }
-  </style>
-
-  <div class="container">
-    <h2>Your Order History</h2>
-    {% if orders %}
-      <ul class="order-list">
+  <div class="container mt-5">
+    <div class="container text-center">
+      <h1 class="font-weight-bold"><h2 class="text-white">Your Order History</h2>
+    </div>
+    <div class="menu-container">
+      <ul class="list-group order-list">
         {% for order in orders %}
-          <li class="order-item">
-            <strong>Order #{{ order.id }}</strong>
-            <p>Placed {{ order.order_date|timesince }} ago</p>
-            <!-- Add other order details here -->
-
-            <!-- Example: Displaying the address from the associated client -->
-            <p>Delivery Address: {{ order.client.address }}</p>
+          <li class="list-group-item order-item bg-dark text-white mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="order-info">
+                {% if order.status.name %}
+                <span class="font-weight-bold"><a href="{% url 'order_status' order.id %}"><button class="btn btn-success place-order-btn">Order #{{ order.id }}</button></a> - Status: {{ order.status.name }}</span>
+                {% else %}
+                <span class="font-weight-bold"><a href="{% url 'order_status' order.id %}"><button class="btn btn-success place-order-btn">Order #{{ order.id }}</button></a> - Status: oczekujące</span>
+                {% endif %}
+                <p class="card-text">Total price is <strong>${{order.total_price}}</strong></p>
+                <p>Placed {{ order.order_date|timesince }} ago</p>
+              </div>            
+            </div>
           </li>
         {% endfor %}
       </ul>
-    {% else %}
-      <p>No orders found.</p>
-    {% endif %}
+    </div>
   </div>
 {% endblock %}
+
+</body>
+</html>

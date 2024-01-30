@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm  # Adjust this import based on your project structure
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 
 def loginUser(request):
     if request.method == 'POST':
@@ -20,6 +21,9 @@ def loginUser(request):
         if user is not None:
             login(request, user)
             return redirect('menu')
+        else:
+            messages.error(request, 'Login failed. Check fields and try again.')
+
     return render(request, 'gastro_app/login.html')
 
 
@@ -127,6 +131,8 @@ def register(request):
             client = Client.objects.create(user=user, address=address)
             login(request, user)
             return redirect('menu')  # Redirect to your desired page
+        else:
+            messages.error(request, 'Registration failed. Check fields and try again.')
     else:
         form = UserRegistrationForm()
     context = {'form': form}
